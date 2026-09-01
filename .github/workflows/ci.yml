@@ -16,7 +16,12 @@ jobs:
           go-version: "1.24.x"
 
       - name: gofmt
-        run: test -z "$(gofmt -l .)"
+        run: |
+          out="$(gofmt -l .)"
+          if [ -n "$out" ]; then
+            echo "$out"
+            exit 1
+          fi
 
       - name: vet
         run: go vet ./...

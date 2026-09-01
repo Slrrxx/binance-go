@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"go/format"
 	"os"
 	"path/filepath"
 	"strings"
@@ -69,8 +70,12 @@ func main() {
 		fmt.Fprintf(&b, "\tif err := s.c.%s(ctx, %s, %q, p, &out, %s); err != nil {\n", call, family, ep.Path, opts)
 		b.WriteString("\t\treturn nil, err\n\t}\n\treturn out, nil\n}\n\n")
 	}
+	formatted, err := format.Source(b.Bytes())
+	if err != nil {
+		fatal(err)
+	}
 	out := filepath.Join(root, "zz_generated.go")
-	if err := os.WriteFile(out, b.Bytes(), 0o644); err != nil {
+	if err := os.WriteFile(out, formatted, 0o644); err != nil {
 		fatal(err)
 	}
 }

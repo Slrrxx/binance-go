@@ -110,4 +110,3 @@ func (s *WalletService) AssetDividend(ctx context.Context, recv int64, extra map
 	}
 	return out, nil
 }
-
