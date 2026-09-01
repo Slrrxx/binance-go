@@ -190,6 +190,8 @@ const (
 	MarketSpot Market = iota
 	MarketUSDFutures
 	MarketCoinFutures
+	MarketPortfolio
+	MarketOptions
 )
 
 // DepthLevel is a partial book depth for WebSocket streams.

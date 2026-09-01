@@ -4,6 +4,7 @@
 [![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white)](https://go.dev/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Slrrxx/binance-go.svg)](https://pkg.go.dev/github.com/Slrrxx/binance-go)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![codecov](https://codecov.io/gh/Slrrxx/binance-go/graph/badge.svg)](https://codecov.io/gh/Slrrxx/binance-go)
 
 Unofficial **Binance REST + WebSocket SDK** for Go.
 
@@ -70,14 +71,16 @@ Public market data works with empty credentials. Signed calls need `BINANCE_API_
 ## Features
 
 - Spot market data, trading, account, and user-data stream
-- USD-M and COIN-M futures
+- USD-M and COIN-M futures, portfolio margin (papi), vanilla options (eapi)
 - Cross / isolated margin and wallet (withdrawals documented as dangerous)
+- Simple Earn, convert, and gift card
 - HMAC-SHA256, RSA, and Ed25519 signing
 - Automatic timestamps, configurable `recvWindow`, optional server-time sync
-- Testnet and demo: `WithTestnet()`, `WithDemo()`
+- Testnet, demo, TLD, and HTTP proxy: `WithTestnet()`, `WithDemo()`, `WithProxy`
 - Historical klines — slice helper **and** memory-efficient iterator
-- Reconnecting WebSockets with typed events
-- Thread-safe depth cache (REST snapshot + incremental sync)
+- Reconnecting market WebSockets (`client.WebSocket().Trade`) with typed events
+- WebSocket API trading (`client.WSAPI()`, `client.FuturesWSAPI()`)
+- Thread-safe depth cache (snapshot + incremental sync) for spot and futures
 - Optional retry and rate limiter; secrets never logged
 
 ## Authentication
@@ -114,7 +117,8 @@ err := client.TestOrder(ctx, binance.OrderRequest{
 ```
 
 ```go
-stream, err := client.Subscribe(ctx, binance.StreamTrade("BTCUSDT"))
+stream, err := client.WebSocket().Trade(ctx, "BTCUSDT")
+// or: client.Subscribe(ctx, binance.StreamTrade("BTCUSDT"))
 defer stream.Close()
 
 for {
@@ -144,7 +148,16 @@ _, _ = cache.Wait(ctx)
 bids, asks := cache.Bids(), cache.Asks()
 ```
 
-Futures: `client.Futures()` · COIN-M: `client.CoinFutures()` · margin / wallet: `client.Margin()`, `client.Wallet()`.
+Futures: `client.Futures()` · COIN-M: `client.CoinFutures()` · margin / wallet: `client.Margin()`, `client.Wallet()` · portfolio / options: `client.Portfolio()`, `client.Options()` · earn / convert: `client.Earn()`, `client.Convert()`.
+
+```go
+err := client.WSAPI().Ping(ctx)
+order, err := client.WSAPI().CreateOrder(ctx, binance.OrderRequest{
+    Symbol: "BTCUSDT", Side: binance.SideBuy, Type: binance.OrderTypeMarket, Quantity: "0.001",
+})
+```
+
+Order creates over the WebSocket API are **not retried**.
 
 ## Errors
 
@@ -178,6 +191,8 @@ go run ./examples/ticker
 | [`futures_order`](examples/futures_order) | USD-M on testnet |
 | [`margin`](examples/margin) | margin account |
 | [`testnet`](examples/testnet) | ping + test order |
+| [`websocket_facade`](examples/websocket_facade) | `WebSocket().Trade` |
+| [`wsapi`](examples/wsapi) | spot WebSocket API ping + ticker |
 
 Never commit real keys.
 
@@ -188,6 +203,7 @@ Never commit real keys.
 - [python-binance → binance-go](docs/MAPPING.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
+- [Social preview](docs/social-preview.png) — set under GitHub → Settings → General → Social preview
 
 ```bash
 go test ./...

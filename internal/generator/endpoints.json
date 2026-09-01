@@ -1,0 +1,68 @@
+{
+  "endpoints": [
+    {
+      "service": "Wallet",
+      "name": "DustLog",
+      "method": "GET",
+      "path": "/sapi/v1/asset/dribblet",
+      "signed": true,
+      "doc": "DustLog returns small-balance conversion history."
+    },
+    {
+      "service": "Wallet",
+      "name": "APIRestrictions",
+      "method": "GET",
+      "path": "/sapi/v1/account/apiRestrictions",
+      "signed": true,
+      "doc": "APIRestrictions returns the current API key permission set."
+    },
+    {
+      "service": "Wallet",
+      "name": "SpotDelistSchedule",
+      "method": "GET",
+      "path": "/sapi/v1/spot/delist-schedule",
+      "signed": true,
+      "doc": "SpotDelistSchedule returns upcoming spot delistings."
+    },
+    {
+      "service": "Earn",
+      "name": "FlexiblePosition",
+      "method": "GET",
+      "path": "/sapi/v1/simple-earn/flexible/position",
+      "signed": true,
+      "doc": "FlexiblePosition returns flexible Simple Earn positions."
+    },
+    {
+      "service": "Earn",
+      "name": "LockedPosition",
+      "method": "GET",
+      "path": "/sapi/v1/simple-earn/locked/position",
+      "signed": true,
+      "doc": "LockedPosition returns locked Simple Earn positions."
+    },
+    {
+      "service": "Convert",
+      "name": "OrderStatus",
+      "method": "GET",
+      "path": "/sapi/v1/convert/orderStatus",
+      "signed": true,
+      "doc": "OrderStatus queries a convert order by quote or order id."
+    },
+    {
+      "service": "Wallet",
+      "name": "APITradingStatus",
+      "method": "GET",
+      "path": "/sapi/v1/account/apiTradingStatus",
+      "signed": true,
+      "doc": "APITradingStatus returns account trading-lock status."
+    },
+    {
+      "service": "Wallet",
+      "name": "AssetDividend",
+      "method": "GET",
+      "path": "/sapi/v1/asset/assetDividend",
+      "signed": true,
+      "doc": "AssetDividend returns asset dividend (distribution) records."
+    }
+  ]
+}

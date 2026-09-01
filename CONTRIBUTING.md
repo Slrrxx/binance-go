@@ -13,10 +13,13 @@ Issues and pull requests are welcome.
 ## Dev loop
 
 ```bash
+go generate ./...
 gofmt -w .
 go vet ./...
 go test -race ./...
 ```
+
+SAPI long-tail methods live in `internal/generator/endpoints.json`. After editing the spec, run `go generate ./...` and commit `zz_generated.go`.
 
 Optional live public checks:
 

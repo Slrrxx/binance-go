@@ -26,6 +26,7 @@ type config struct {
 	wsBackoffMax time.Duration
 	wsBuffer     int
 	baseOverride *endpointSet
+	proxyURL     string
 }
 
 func defaultConfig() config {
@@ -49,6 +50,12 @@ type Option func(*config)
 // WithHTTPClient injects a custom *http.Client (timeouts, proxy, transport).
 func WithHTTPClient(c *http.Client) Option {
 	return func(cfg *config) { cfg.httpClient = c }
+}
+
+// WithProxy sets an HTTP(S) proxy URL on the client's transport
+// (for example "http://127.0.0.1:7890"). Applied after WithHTTPClient.
+func WithProxy(raw string) Option {
+	return func(cfg *config) { cfg.proxyURL = raw }
 }
 
 // WithTimeout sets a default per-request timeout when the caller context
@@ -88,6 +95,50 @@ func WithCoinFuturesBaseURL(raw string) Option {
 			cfg.baseOverride = &e
 		}
 		cfg.baseOverride.DAPI = raw
+	}
+}
+
+// WithWSAPIURL overrides the spot WebSocket API origin.
+func WithWSAPIURL(raw string) Option {
+	return func(cfg *config) {
+		if cfg.baseOverride == nil {
+			e := endpointsFor(cfg.env, cfg.tld)
+			cfg.baseOverride = &e
+		}
+		cfg.baseOverride.SpotWSAPI = raw
+	}
+}
+
+// WithFuturesWSAPIURL overrides the USD-M WebSocket API origin.
+func WithFuturesWSAPIURL(raw string) Option {
+	return func(cfg *config) {
+		if cfg.baseOverride == nil {
+			e := endpointsFor(cfg.env, cfg.tld)
+			cfg.baseOverride = &e
+		}
+		cfg.baseOverride.FuturesWSAPI = raw
+	}
+}
+
+// WithPortfolioURL overrides the portfolio-margin (papi) REST origin.
+func WithPortfolioURL(raw string) Option {
+	return func(cfg *config) {
+		if cfg.baseOverride == nil {
+			e := endpointsFor(cfg.env, cfg.tld)
+			cfg.baseOverride = &e
+		}
+		cfg.baseOverride.PAPI = raw
+	}
+}
+
+// WithOptionsURL overrides the vanilla options (eapi) REST origin.
+func WithOptionsURL(raw string) Option {
+	return func(cfg *config) {
+		if cfg.baseOverride == nil {
+			e := endpointsFor(cfg.env, cfg.tld)
+			cfg.baseOverride = &e
+		}
+		cfg.baseOverride.EAPI = raw
 	}
 }
 

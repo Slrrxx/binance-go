@@ -74,6 +74,27 @@ func NewClient(apiKey, apiSecret string, opts ...Option) *Client {
 		if ov.DAPIWS != "" {
 			ep.DAPIWS = ov.DAPIWS
 		}
+		if ov.PAPI != "" {
+			ep.PAPI = ov.PAPI
+		}
+		if ov.EAPI != "" {
+			ep.EAPI = ov.EAPI
+		}
+		if ov.SpotWSAPI != "" {
+			ep.SpotWSAPI = ov.SpotWSAPI
+		}
+		if ov.FuturesWSAPI != "" {
+			ep.FuturesWSAPI = ov.FuturesWSAPI
+		}
+		if ov.PAPIWS != "" {
+			ep.PAPIWS = ov.PAPIWS
+		}
+		if ov.EAPIWS != "" {
+			ep.EAPIWS = ov.EAPIWS
+		}
+	}
+	if err := applyProxy(cfg.httpClient, cfg.proxyURL); err != nil {
+		cfg.log.Error("proxy configuration failed", "err", err)
 	}
 	return &Client{cfg: cfg, endpoints: ep}
 }
@@ -105,6 +126,27 @@ func (c *Client) SubAccount() *SubAccountService { return &SubAccountService{c: 
 
 // UserStream returns listenKey management for the spot user-data stream.
 func (c *Client) UserStream() *UserStreamService { return &UserStreamService{c: c} }
+
+// WebSocket returns market-stream helpers such as Trade and Depth.
+func (c *Client) WebSocket() *WebSocketService { return &WebSocketService{c: c} }
+
+// WSAPI returns the spot WebSocket API (order.place and related methods).
+func (c *Client) WSAPI() *WSAPI { return &WSAPI{c: c} }
+
+// Portfolio returns the portfolio-margin (papi) service.
+func (c *Client) Portfolio() *PortfolioService { return &PortfolioService{c: c} }
+
+// Options returns the vanilla options (eapi) service.
+func (c *Client) Options() *OptionsService { return &OptionsService{c: c} }
+
+// Earn returns Simple Earn helpers.
+func (c *Client) Earn() *EarnService { return &EarnService{c: c} }
+
+// Convert returns convert-quote helpers.
+func (c *Client) Convert() *ConvertService { return &ConvertService{c: c} }
+
+// GiftCard returns gift-card helpers.
+func (c *Client) GiftCard() *GiftCardService { return &GiftCardService{c: c} }
 
 // Environment reports the configured environment.
 func (c *Client) Environment() Environment { return c.cfg.env }

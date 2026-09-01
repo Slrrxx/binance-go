@@ -74,10 +74,18 @@ Naming follows Go conventions (`GetX`, exported types). This is a learning map, 
 | `futures_income_history` | `Futures().IncomeHistory` |
 | `futures_account_trades` | `Futures().UserTrades` |
 | `futures_coin_*` | `CoinFutures().*` |
-| `BinanceSocketManager.trade_socket` | `Subscribe(ctx, StreamTrade(symbol))` |
-| `kline_socket` | `StreamKline` |
-| `depth_socket` | `StreamDepth` / `StreamPartialDepth` |
-| `DepthCacheManager` | `DepthCache(ctx, symbol)` |
+| `BinanceSocketManager.trade_socket` | `WebSocket().Trade(ctx, symbol)` / `Subscribe(ctx, StreamTrade(symbol))` |
+| `kline_socket` | `WebSocket().Kline` / `StreamKline` |
+| `depth_socket` | `WebSocket().Depth` / `StreamDepth` |
+| `DepthCacheManager` | `DepthCache(ctx, symbol)` / `Futures().DepthCache` |
+| `BinanceSocketManager.user_socket` | `UserData` / `Futures().UserData` |
+| `ws.create_order` (WS API) | `WSAPI().CreateOrder` |
+| `papi_*` | `Portfolio().*` |
+| `options_*` / eapi | `Options().*` |
+| `get_simple_earn_*` | `Earn().*` |
+| `convert_*` | `Convert().*` |
+| `gift_card_*` | `GiftCard().*` |
+| `requests_params` proxy | `WithProxy(url)` |
 | `BinanceAPIException` | `*APIError` + `errors.As` |
 
-Go-only additions: `context.Context` on every call, functional options, `RateLimiter`, typed decimals as `string`, structured `Event`, iterator APIs.
+Go-only additions: `context.Context` on every call, functional options, `RateLimiter`, typed decimals as `string`, structured `Event`, iterator APIs, `go generate` SAPI extras.

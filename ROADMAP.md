@@ -45,15 +45,15 @@ Source: python-binance v1.0.37 (`Client`, `AsyncClient`, `BaseClient`, `binance/
 | Auto timestamp + recvWindow | Yes | **Yes** | optional server-time offset sync |
 | Testnet | Yes | **Yes** | `WithTestnet()` |
 | Demo trading | Yes | **Yes** | `WithDemo()` |
-| Custom HTTP / proxy / headers | Yes | **Yes** | functional options |
+| Custom HTTP / proxy / headers | Yes | **Yes** | `WithHTTPClient`, `WithProxy`, `WithHeader` |
 | Rate-limit awareness | Partial | **Yes** | 429/418, Retry-After, optional limiter |
 | Retry (non-idempotent safe) | Informal | **Yes** | never blind-retry order creates |
 | Threaded WS managers | Yes | N/A | Go uses goroutines + `context` instead |
 | Async twin client | `AsyncClient` | N/A | One client; all calls take `context.Context` |
-| WebSocket API trading (ws-api) | Yes | Deferred | REST is v1 source of truth; WS-API later |
-| Portfolio margin (papi) | Yes | Deferred | See coverage checklist |
-| Vanilla options (eapi) | Yes | Deferred | |
-| Simple Earn / staking / mining / convert / gift card | Yes | Deferred | |
+| WebSocket API trading (ws-api) | Yes | **Yes** | `WSAPI()` / `FuturesWSAPI()` |
+| Portfolio margin (papi) | Yes | **Yes** | `Portfolio()` |
+| Vanilla options (eapi) | Yes | **Yes** | `Options()` |
+| Simple Earn / staking / mining / convert / gift card | Yes | Partial | Earn, convert, gift card; mining deferred |
 | Sub-account (core) | Yes | **Yes** | list, assets, transfers |
 | TLD variants (.us / .jp) | Yes | **Yes** | `WithTLD("us")` |
 | Orjson / extra JSON libs | Yes | No | `encoding/json` only |
@@ -72,7 +72,7 @@ Source: python-binance v1.0.37 (`Client`, `AsyncClient`, `BaseClient`, `binance/
 | `get_historical_klines(...)` | `GetHistoricalKlines(ctx, ...)` |
 | `get_historical_klines_generator(...)` | `HistoricalKlines(ctx, ...)` iterator |
 | `stream_get_listen_key()` | `UserStream().Create(ctx)` |
-| `BinanceSocketManager.trade_socket` | `Subscribe(ctx, StreamTrade("BTCUSDT"))` |
+| `BinanceSocketManager.trade_socket` | `WebSocket().Trade(ctx, "BTCUSDT")` |
 | `DepthCacheManager` | `DepthCache(ctx, "BTCUSDT")` |
 | `futures_create_order` | `Futures().CreateOrder(ctx, ...)` |
 | `futures_coin_*` | `CoinFutures().*` |
@@ -135,7 +135,7 @@ binance-go-api/
 
 Why not `spot/`, `futures/` subpackages? They would force users to import several packages for types that belong together (`OrderRequest`, `Side`, `APIError`). Stripe-style and `google.golang.org` clients that want a Python-like DX keep one package and split files.
 
-Why not generate every Binance path in v1? python-binance's generated tail is huge and drifts. v1 is handwritten for the trading core. A generator can be added later under `internal/generator` without breaking the public API.
+Handwritten core plus `internal/generator` for SAPI extras (`go generate ./...` writes `zz_generated.go`). Add rows to `internal/generator/endpoints.json` instead of growing the god-class.
 
 **Dependency policy:** standard library + `github.com/coder/websocket` (context-native, maintained). No gorilla/websocket. No decimal library: Binance decimals stay `string`.
 
@@ -175,6 +175,13 @@ client.Margin()
 client.Wallet()
 client.SubAccount()
 client.UserStream()
+client.WebSocket()
+client.WSAPI()
+client.Portfolio()
+client.Options()
+client.Earn()
+client.Convert()
+client.GiftCard()
 ```
 
 ### Orders (type-safe, string decimals)
@@ -267,7 +274,7 @@ if err := it.Err(); err != nil { return err }
 | 11 Docs | README, examples, mapping, coverage | Examples compile |
 | 12 CI | gofmt, vet, test, race, golangci-lint, build | GitHub Actions |
 
-v1 **does not** implement: Options, Portfolio Margin, Simple Earn, Gift Card, WS-API trading, full generated SAPI long tail.
+v1 **does not** implement: mining, broker / copy-trading, or the entire Binance SAPI catalog. Add long-tail paths via the generator.
 
 After each phase: compile, test, race, review public API, update coverage/README.
 
@@ -290,8 +297,8 @@ After each phase: compile, test, race, review public API, update coverage/README
 | Secrets | Redact in logs/errors | Never log `signature`, secret, PEM, or raw signed query. |
 | Module path | `github.com/Slrrxx/binance-go` | v2 would be `/v2`. |
 | License | MIT | Same class as python-binance; commercial + OSS friendly. **Original code.** |
-| Code generation | Not in v1 | Prefer reviewable handwritten core. Generator is a later additive tool. |
-| WS-API / papi / options | Deferred | Scope control; REST + market WS covers the python "few minutes to first trade" path. |
+| Code generation | Additive | Handwritten core + `internal/generator` for SAPI extras. |
+| WS-API / papi / options | In v0.1 | REST remains the default path; WS-API is opt-in. |
 
 ### Security notes (withdrawals)
 

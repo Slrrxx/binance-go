@@ -8,4 +8,5 @@
 //
 //	client := binance.NewClient(os.Getenv("BINANCE_API_KEY"), os.Getenv("BINANCE_API_SECRET"))
 //	ticker, err := client.GetSymbolTicker(ctx, "BTCUSDT")
+//	stream, err := client.WebSocket().Trade(ctx, "BTCUSDT")
 package binance
