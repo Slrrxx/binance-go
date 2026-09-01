@@ -18,6 +18,7 @@ type Client struct {
 	synced    atomic.Bool
 	usedWt    atomic.Int64
 	endpoints endpointSet
+	updateResults chan UpdateResult
 }
 
 // NewClient constructs a Client. apiSecret may be empty when an RSA or
@@ -96,7 +97,15 @@ func NewClient(apiKey, apiSecret string, opts ...Option) *Client {
 	if err := applyProxy(cfg.httpClient, cfg.proxyURL); err != nil {
 		cfg.log.Error("proxy configuration failed", "err", err)
 	}
-	return &Client{cfg: cfg, endpoints: ep}
+	c := &Client{
+		cfg:           cfg,
+		endpoints:     ep,
+		updateResults: make(chan UpdateResult, 1),
+	}
+	if cfg.update.enabled {
+		c.startUpdateCheck()
+	}
+	return c
 }
 
 func httpClientWithTimeout(d time.Duration) *http.Client {

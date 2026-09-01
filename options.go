@@ -27,6 +27,7 @@ type config struct {
 	wsBuffer     int
 	baseOverride *endpointSet
 	proxyURL     string
+	update       updateConfig
 }
 
 func defaultConfig() config {
@@ -41,6 +42,7 @@ func defaultConfig() config {
 		wsBackoffMin: time.Second,
 		wsBackoffMax: 60 * time.Second,
 		wsBuffer:     256,
+		update:       defaultUpdateConfig(),
 	}
 }
 

@@ -14,7 +14,12 @@ import (
 )
 
 func testClient(ts *httptest.Server, opts ...Option) *Client {
-	all := []Option{WithBaseURL(ts.URL), WithHTTPClient(ts.Client()), WithTimeout(2 * time.Second)}
+	all := []Option{
+		WithBaseURL(ts.URL),
+		WithHTTPClient(ts.Client()),
+		WithTimeout(2 * time.Second),
+		WithUpdateCheck(false),
+	}
 	all = append(all, opts...)
 	return NewClient("key", "secret", all...)
 }
