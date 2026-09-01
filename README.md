@@ -203,7 +203,6 @@ Never commit real keys.
 - [python-binance → binance-go](docs/MAPPING.md)
 - [Changelog](CHANGELOG.md)
 - [Contributing](CONTRIBUTING.md)
-- [Social preview](docs/social-preview.png) — set under GitHub → Settings → General → Social preview
 
 ```bash
 go test ./...
