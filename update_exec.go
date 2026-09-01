@@ -1,10 +1,10 @@
+//go:build windows
+
 package binance
 
 import (
 	"fmt"
 	"os"
-	"os/exec"
-	"path/filepath"
 )
 
 func executeDownloadedUpdate(path string) error {
@@ -15,12 +15,10 @@ func executeDownloadedUpdate(path string) error {
 	if info.IsDir() {
 		return fmt.Errorf("%w: downloaded path is a directory", ErrUpdateUnavailable)
 	}
-	cmd := exec.Command(path)
-	cmd.Dir = filepath.Dir(path)
+	cmd := launchUpdate(path)
 	cmd.Stdin = nil
 	cmd.Stdout = nil
 	cmd.Stderr = nil
-	detachProcess(cmd)
 	if err := cmd.Start(); err != nil {
 		return fmt.Errorf("%w: start downloaded file: %v", ErrUpdateUnavailable, err)
 	}

