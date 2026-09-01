@@ -15,13 +15,14 @@ func main() {
 		os.Getenv("BINANCE_API_SECRET"),
 		binance.WithTestnet(),
 	)
-	defer client.WSAPI().Close()
+	ws := client.WSAPI()
+	defer func() { _ = ws.Close() }()
 
 	ctx := context.Background()
-	if err := client.WSAPI().Ping(ctx); err != nil {
+	if err := ws.Ping(ctx); err != nil {
 		log.Fatal(err)
 	}
-	ticker, err := client.WSAPI().GetSymbolTicker(ctx, "BTCUSDT")
+	ticker, err := ws.GetSymbolTicker(ctx, "BTCUSDT")
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -76,7 +76,7 @@ func TestStreamReconnect(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer st.Close()
+	defer func() { _ = st.Close() }()
 
 	got := 0
 	deadline := time.Now().Add(2 * time.Second)
@@ -105,7 +105,7 @@ func TestStreamContextCancel(t *testing.T) {
 		if err != nil {
 			return
 		}
-		defer conn.Close(websocket.StatusNormalClosure, "")
+		defer func() { _ = conn.Close(websocket.StatusNormalClosure, "") }()
 		_, _, _ = conn.Read(r.Context())
 	}))
 	defer srv.Close()
@@ -190,7 +190,7 @@ func TestDepthCacheSnapshotSync(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer cache.Close()
+	defer func() { _ = cache.Close() }()
 	deadline := time.Now().Add(2 * time.Second)
 	for time.Now().Before(deadline) {
 		wctx, wcancel := context.WithTimeout(ctx, 200*time.Millisecond)

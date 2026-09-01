@@ -111,15 +111,14 @@ func (d *DepthCache) run(ctx context.Context) {
 		if ctx.Err() != nil {
 			return
 		}
-		if err := d.syncOnce(ctx); err != nil {
-			if ctx.Err() != nil {
-				return
-			}
-			d.setErr(err)
-			d.c.cfg.log.Info("depth cache resync", "symbol", d.symbol, "err", err)
-			if err := sleep(ctx, time.Second); err != nil {
-				return
-			}
+		err := d.syncOnce(ctx)
+		if ctx.Err() != nil {
+			return
+		}
+		d.setErr(err)
+		d.c.cfg.log.Info("depth cache resync", "symbol", d.symbol, "err", err)
+		if err := sleep(ctx, time.Second); err != nil {
+			return
 		}
 	}
 }

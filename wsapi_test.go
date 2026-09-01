@@ -18,7 +18,7 @@ func TestWSAPIPingAndOrder(t *testing.T) {
 		if err != nil {
 			return
 		}
-		defer conn.Close(websocket.StatusNormalClosure, "")
+		defer func() { _ = conn.Close(websocket.StatusNormalClosure, "") }()
 		for {
 			_, data, err := conn.Read(r.Context())
 			if err != nil {
@@ -87,7 +87,7 @@ func TestWebSocketFacadeSubscribe(t *testing.T) {
 		if err != nil {
 			return
 		}
-		defer conn.Close(websocket.StatusNormalClosure, "")
+		defer func() { _ = conn.Close(websocket.StatusNormalClosure, "") }()
 		_ = conn.Write(r.Context(), websocket.MessageText, []byte(`{"e":"trade","E":1,"s":"BTCUSDT","p":"1","q":"1","t":1,"T":1}`))
 		_, _, _ = conn.Read(r.Context())
 	}))
@@ -100,7 +100,7 @@ func TestWebSocketFacadeSubscribe(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer st.Close()
+	defer func() { _ = st.Close() }()
 	ev, err := st.Next(ctx)
 	if err != nil {
 		t.Fatal(err)
@@ -114,7 +114,7 @@ func TestPortfolioAndOptionsPaths(t *testing.T) {
 	var paths []string
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		paths = append(paths, r.URL.Path)
-		w.Write([]byte(`{}`))
+		_, _ = w.Write([]byte(`{}`))
 	}))
 	defer ts.Close()
 	c := NewClient("k", "s",

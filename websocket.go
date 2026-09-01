@@ -216,7 +216,7 @@ func (s *Stream) connectOnce() error {
 	if err != nil {
 		return err
 	}
-	defer conn.Close(websocket.StatusNormalClosure, "")
+	defer func() { _ = conn.Close(websocket.StatusNormalClosure, "") }()
 	conn.SetReadLimit(1 << 20)
 	for {
 		_, data, err := conn.Read(s.ctx)

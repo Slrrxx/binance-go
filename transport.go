@@ -189,7 +189,7 @@ func (c *Client) doOnce(ctx context.Context, call apiCall, dest any) error {
 	if err != nil {
 		return &RequestError{Method: call.method, Path: call.path, Err: err}
 	}
-	defer resp.Body.Close()
+	defer func() { _ = resp.Body.Close() }()
 	body, err := io.ReadAll(io.LimitReader(resp.Body, 8<<20))
 	if err != nil {
 		return &RequestError{Method: call.method, Path: call.path, Err: err}

@@ -22,7 +22,7 @@ func testClient(ts *httptest.Server, opts ...Option) *Client {
 func TestPingAndTicker(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/v3/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("{}"))
+		_, _ = w.Write([]byte("{}"))
 	})
 	mux.HandleFunc("/api/v3/ticker/price", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Query().Get("symbol") != "BTCUSDT" {
@@ -232,9 +232,7 @@ func TestExchangeInfoAndOrderBook(t *testing.T) {
 	if err := c.SyncTime(context.Background()); err != nil {
 		t.Fatal(err)
 	}
-	if c.TimeOffset() == 0 {
-		// possible but unlikely; offset is server - local
-	}
+	t.Logf("time offset %d ms", c.TimeOffset())
 }
 
 func TestAccountAndUsedWeight(t *testing.T) {

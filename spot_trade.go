@@ -189,7 +189,7 @@ type CancelReplaceRequest struct {
 
 // CancelReplace cancels an order and places a new one atomically.
 func (s *SpotService) CancelReplace(ctx context.Context, req CancelReplaceRequest) (*Order, error) {
-	p := req.OrderRequest.params()
+	p := req.params()
 	p.Set("cancelReplaceMode", req.CancelReplaceMode)
 	p.SetInt64("cancelOrderId", req.CancelOrderID)
 	p.Set("cancelOrigClientOrderId", req.CancelClientOrderID)

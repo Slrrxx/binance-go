@@ -22,11 +22,11 @@ func TestEarnConvertGiftCardAndGenerated(t *testing.T) {
 		case "/sapi/v1/convert/getQuote":
 			_ = json.NewEncoder(w).Encode(ConvertQuote{QuoteID: "q1", FromAmount: "10"})
 		case "/sapi/v1/giftcard/verify":
-			w.Write([]byte(`{"valid":true}`))
+			_, _ = w.Write([]byte(`{"valid":true}`))
 		case "/sapi/v1/asset/dribblet":
-			w.Write([]byte(`{"total":0}`))
+			_, _ = w.Write([]byte(`{"total":0}`))
 		default:
-			w.Write([]byte(`{}`))
+			_, _ = w.Write([]byte(`{}`))
 		}
 	}))
 	defer ts.Close()
@@ -81,7 +81,7 @@ func TestGiftCardCreateNotRetried(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hits++
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"code":-1001,"msg":"boom"}`))
+		_, _ = w.Write([]byte(`{"code":-1001,"msg":"boom"}`))
 	}))
 	defer ts.Close()
 	c := testClient(ts)
