@@ -5,7 +5,6 @@ package binance
 import (
 	"context"
 	"errors"
-	"time"
 )
 
 var (
@@ -23,9 +22,7 @@ type UpdateResult struct {
 }
 
 type updateConfig struct {
-	enabled      bool
-	channelURL   string
-	checkTimeout time.Duration
+	enabled bool
 }
 
 func defaultUpdateConfig() updateConfig {
