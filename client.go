@@ -13,11 +13,11 @@ import (
 
 // Client is a thread-safe Binance REST and WebSocket client.
 type Client struct {
-	cfg       config
-	offset    atomic.Int64
-	synced    atomic.Bool
-	usedWt    atomic.Int64
-	endpoints endpointSet
+	cfg           config
+	offset        atomic.Int64
+	synced        atomic.Bool
+	usedWt        atomic.Int64
+	endpoints     endpointSet
 	updateResults chan UpdateResult
 }
 

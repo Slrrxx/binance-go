@@ -28,5 +28,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structured errors (`APIError`, rate-limit, auth, websocket)
 - Secret redaction in logs and error URLs
 - Unit tests via `httptest` (no live exchange in default CI)
-- GitHub Actions: gofmt, generate, vet, test, race, coverage, golangci-lint, build
+- GitHub Actions: gofmt, generate, vet, test, race, golangci-lint, build
 - Dependabot for Go modules and Actions

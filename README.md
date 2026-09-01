@@ -4,7 +4,6 @@
 [![Go](https://img.shields.io/badge/Go-1.24+-00ADD8?logo=go&logoColor=white)](https://go.dev/)
 [![Go Reference](https://pkg.go.dev/badge/github.com/Slrrxx/binance-go.svg)](https://pkg.go.dev/github.com/Slrrxx/binance-go)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![codecov](https://codecov.io/gh/Slrrxx/binance-go/graph/badge.svg)](https://codecov.io/gh/Slrrxx/binance-go)
 
 Unofficial **Binance REST + WebSocket SDK** for Go.
 

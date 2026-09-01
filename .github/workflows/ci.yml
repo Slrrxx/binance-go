@@ -32,21 +32,13 @@ jobs:
           test -z "$(git status --porcelain zz_generated.go)"
 
       - name: test
-        run: go test -coverprofile=coverage.out ./...
+        run: go test ./...
 
       - name: race
         run: go test -race ./...
 
       - name: build
         run: go build ./...
-
-      - name: coverage
-        uses: codecov/codecov-action@v7
-        continue-on-error: true
-        with:
-          files: coverage.out
-          fail_ci_if_error: false
-          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: examples
         run: |
