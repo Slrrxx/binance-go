@@ -1,0 +1,22 @@
+name: Bug
+description: Something does not work as documented
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Actual vs expected behavior.
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction
+      description: Minimal snippet. Redact API keys and signatures.
+      render: go
+  - type: input
+    id: version
+    attributes:
+      label: SDK / Go version
+      placeholder: "binance-go v0.1.0 · go 1.24"

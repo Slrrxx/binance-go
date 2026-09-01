@@ -1,0 +1,11 @@
+name: Feature
+description: Request an endpoint or API change
+labels: [enhancement]
+body:
+  - type: textarea
+    id: ask
+    attributes:
+      label: What do you want
+      description: Endpoint, stream, or helper — and why it belongs in the public API.
+    validations:
+      required: true
